@@ -1,21 +1,27 @@
-public class CurrentConditionsDisplay implements Observer,DisplayElement {
+import java.util.Observable;
+import java.util.Observer;
+
+public class CurrentConditionsDisplay implements Observer {
     private float temperature;
     private float humidity;
     private float pressure;
-    private Subject WeatherData;
+    Observable observable;
 
-    public CurrentConditionsDisplay(Subject weatherData)
+    public CurrentConditionsDisplay(Observable observable)
     {
-        this.WeatherData=weatherData;
-        WeatherData.registerObserver(this);
+//        this.observable=observable;
+        observable.addObserver(this); //特别注意等一下在上面加一个this试试看
     }
 
-    public void update(float temperature,float humidity,float pressure)
+    public void update(Observable obs, Object arg)
     {
-        this.temperature=temperature;
-        this.humidity=humidity;
-        this.pressure=pressure;
-        display();
+        if(obs instanceof WeatherData){
+            WeatherData weatherData=(WeatherData)obs;
+            this.temperature=weatherData.getTemperature();
+            this.humidity=weatherData.getHumidity();
+            this.pressure=weatherData.getPressure();
+            display();
+        }
     }
     public void display()
     {
